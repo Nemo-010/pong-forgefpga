@@ -1,0 +1,47 @@
+name: ci
+
+# Everything that runs here is runnable without the vendor toolchain, so it
+# is fast and always green-or-red on its own terms.  The ForgeFPGA build is
+# in fpga.yml because it needs a 291 MB download.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            iverilog verilator python3 make
+
+      - name: python checks
+        run: |
+          python3 scripts/physics.py --check
+          python3 scripts/i2c_timing.py --check
+
+      - name: lint
+        run: make lint
+
+      - name: simulations
+        run: make sim
+
+      - name: rendered picture check
+        run: |
+          make frames
+          python3 scripts/frame_check.py out/frames.hex --all --quiet
+
+      - name: Tiny Tapeout wrapper
+        run: make -C asic check
+
+      - name: regenerate the font and diff it
+        run: |
+          cp src/pong_font.v /tmp/pong_font.v
+          python3 scripts/font_gen.py --out src/pong_font.v
+          diff -u /tmp/pong_font.v src/pong_font.v

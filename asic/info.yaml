@@ -1,0 +1,52 @@
+# Tiny Tapeout project information
+project:
+  title:      "Pong for an SSD1306 OLED"
+  author:     "Nemo"
+  discord:    ""
+  description: "A complete Pong (integer physics, streaming SSD1306 I2C renderer) with five switches and an open-drain I2C master."
+  language:   "Verilog"
+  clock_hz:   50000000
+
+  # tiles used by the design (1x1 = 1 tile; see the shuttle page)
+  tiles: "1x1"
+
+  # top module name
+  top_module: "tt_um_pong"
+
+  # The design's own pins:
+  #   ui_in[4:0] the five switches (active high)
+  #   uio[1:0]   SCL/SDA, open drain
+  #   uo_out[0]  LED
+  pinout:
+    # inputs
+    ui[0]: "left paddle up"
+    ui[1]: "left paddle down"
+    ui[2]: "right paddle up"
+    ui[3]: "right paddle down"
+    ui[4]: "start"
+    ui[5]: ""
+    ui[6]: ""
+    ui[7]: ""
+    # outputs
+    uo[0]: "LED"
+    uo[1]: ""
+    uo[2]: ""
+    uo[3]: ""
+    uo[4]: ""
+    uo[5]: ""
+    uo[6]: ""
+    uo[7]: ""
+    # bidirectional
+    uio[0]: "SCL (open drain, needs a pull-up)"
+    uio[1]: "SDA (open drain, needs a pull-up)"
+    uio[2]: ""
+    uio[3]: ""
+    uio[4]: ""
+    uio[5]: ""
+    uio[6]: ""
+    uio[7]: ""
+
+# The wrapper needs the design's own reset generator, which runs for
+# 16 * 2**16 clocks after configuration, so the testbench should give it a
+# few milliseconds before checking anything.
+yaml_version: 6

@@ -1,0 +1,50 @@
+# io_map.pcf -- pin constraints for Pong on the Vicharak Shrike Lite
+# (Renesas ForgeFPGA SLG47910V, STQFN-24, in package U5).
+#
+# Syntax:  set_io <signal_name>  <assignment>
+#   PIN_n      output driver data          (o_*)
+#   PIN_n_OE   output driver enable        (o_*_oe, 1 = drive)
+#   PIN_n_IN   input buffer                (i_*)
+#
+# Physical mapping (see docs/PINMAP.md for the derivation from the board's
+# KiCad layout, Shrike-lite.kicad_pcb, and for the SLG47910 datasheet
+# pin table, Rev 1.05 table "Pin Assignments"):
+#
+#   U5 pin 1  = F_GPIO10 -> header J3 pin 8   BUTTON up    (P1)
+#   U5 pin 2  = F_GPIO11 -> header J3 pin 7   BUTTON down  (P1)
+#   U5 pin 3  = F_GPIO12 -> header J3 pin 10  BUTTON up    (P2)
+#   U5 pin 4  = F_GPIO13 -> header J3 pin 9   BUTTON down  (P2)
+#   U5 pin 5  = F_GPIO14 -> header J3 pin 12  BUTTON start
+#   U5 pin 6  = F_GPIO15 -> header J3 pin 11  spare  (unused)
+#   U5 pin 7  = F_GPIO16 -> on-board LED D2   STATUS
+#   U5 pin 23 = F_GPIO8  -> header J3 pin 6   I2C SCL
+#   U5 pin 24 = F_GPIO9  -> header J3 pin 5   I2C SDA
+#
+# The OLED is an SSD1306 (128x64, monochrome) with 4.7k pull-ups to 3.3 V
+# on the module; the FPGA only ever pulls SCL/SDA low and releases them.
+
+# ── clock ─────────────────────────────────────────────────────────────────────
+# The ForgeFPGA's own 50 MHz oscillator (SLG47910 datasheet Rev 1.05 s.6,
+# nominal 50 MHz, 43.495-54.110 MHz over -40..+85 C).  clk_en must be tied
+# high or the oscillator output stays off.
+set_io clk     OSC_CLK
+set_io clk_en  OSC_EN
+
+# ── switches (active low: closed = 0) ─────────────────────────────────────────
+set_io i_btn_l_up_n  PIN_1_IN
+set_io i_btn_l_dn_n  PIN_2_IN
+set_io i_btn_r_up_n  PIN_3_IN
+set_io i_btn_r_dn_n  PIN_4_IN
+set_io i_btn_start_n PIN_5_IN
+
+# ── I2C to the SSD1306 ────────────────────────────────────────────────────────
+set_io o_scl    PIN_23
+set_io o_scl_oe PIN_23_OE
+set_io i_scl    PIN_23_IN
+set_io o_sda    PIN_24
+set_io o_sda_oe PIN_24_OE
+set_io i_sda    PIN_24_IN
+
+# ── status LED (on when a match is in progress) ───────────────────────────────
+set_io o_led    PIN_7
+set_io o_led_oe PIN_7_OE

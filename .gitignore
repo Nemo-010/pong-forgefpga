@@ -1,0 +1,11 @@
+# simulation and tool output
+out/
+tmp/
+__pycache__/
+*.pyc
+*.vvp
+*.vcd
+
+# ForgeFPGA build products (see fpga/Makefile)
+fpga/ffpga/build/
+fpga/*.ffpga
