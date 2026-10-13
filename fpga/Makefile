@@ -261,6 +261,18 @@ endif
 PCF        := $(PROJECT_DIR)/io_map.pcf
 IO_SPEC    := $(BUILD_DIR)/io_spec_in.txt
 FLOOR_PLAN := $(BUILD_DIR)/floorplanspec.fp
+
+# The floorplan file is a project *input*, but the tool looks for it inside
+# the generated build directory, so it is not in the repository and a fresh
+# clone has none.  Create it if it is missing.  The contents are what the
+# Renesas GUI writes for this part: "1K" selects the whole EFLX-1K tile
+# (140 logic RBBs, 1120 LUT5, 1120 FF - the entire SLG47910) and the
+# trailing "M" is the memory configuration the flow captured.
+$(FLOOR_PLAN):
+	@mkdir -p $(dir $@)
+	@printf '1K\n\nM\n' > $@
+	@echo "created $(FLOOR_PLAN) (1K tile = the whole device)"
+
 FFPGA      := $(PROJECT_DIR)/$(PROJECT).ffpga
 NETLIST    := $(BUILD_DIR)/netlist.edif
 SYNTH_YS   := $(BUILD_DIR)/synth_script.ys
@@ -316,7 +328,7 @@ else
 endif
 	@test -x $(EDA_PLACER) || (echo "ERROR: eda-placer not found at $(EDA_PLACER)"; exit 1)
 	@test -f $(IO_SPEC)    || (echo "ERROR: io_spec_in.txt missing — run: make update"; exit 1)
-	@test -f $(FLOOR_PLAN) || (echo "ERROR: floorplanspec.fp missing in $(BUILD_DIR)"; exit 1)
+	@test -f $(FLOOR_PLAN) || $(MAKE) --no-print-directory $(FLOOR_PLAN)
 	@echo "Tools OK"
 
 # ── lint ──────────────────────────────────────────────────────────────────────
