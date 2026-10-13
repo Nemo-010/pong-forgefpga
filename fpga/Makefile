@@ -268,6 +268,12 @@ FLOOR_PLAN := $(BUILD_DIR)/floorplanspec.fp
 # Renesas GUI writes for this part: "1K" selects the whole EFLX-1K tile
 # (140 logic RBBs, 1120 LUT5, 1120 FF - the entire SLG47910) and the
 # trailing "M" is the memory configuration the flow captured.
+#
+# It is an order-only prerequisite of check-tools rather than a nested
+# "make $(FLOOR_PLAN)": this Makefile swallows unknown goals with a
+# catch-all rule, and passing the path as a goal made that rule override
+# this one (the "overriding recipe" warning) so the file was never
+# created.
 $(FLOOR_PLAN):
 	@mkdir -p $(dir $@)
 	@printf '1K\n\nM\n' > $@
@@ -318,7 +324,7 @@ update: $(PCF) $(BUILD_DIR)
 build: check-tools pnr
 
 # ── check-tools: verify external binaries and generated inputs exist ──────────
-check-tools: | $(TMPDIR)
+check-tools: | $(TMPDIR) $(FLOOR_PLAN)
 ifeq ($(PROJECT_TYPE),vhdl)
 	@test -x "$(YOSYS_VHDL)" || (echo "ERROR: yosys not found at $(YOSYS_VHDL) (oss-cad-suite missing?)"; exit 1)
 	@test -x "$(GHDL)"       || (echo "ERROR: ghdl not found at $(GHDL) (oss-cad-suite missing?)";   exit 1)
@@ -328,7 +334,6 @@ else
 endif
 	@test -x $(EDA_PLACER) || (echo "ERROR: eda-placer not found at $(EDA_PLACER)"; exit 1)
 	@test -f $(IO_SPEC)    || (echo "ERROR: io_spec_in.txt missing — run: make update"; exit 1)
-	@test -f $(FLOOR_PLAN) || $(MAKE) --no-print-directory $(FLOOR_PLAN)
 	@echo "Tools OK"
 
 # iverilog and eda-placer both need a writable scratch directory; a fresh
