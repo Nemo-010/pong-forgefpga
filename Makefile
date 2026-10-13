@@ -32,12 +32,16 @@ else
 IV          ?= iverilog
 VV          ?= vvp
 endif
+# VERILATOR_ROOT is only exported when the local build is used: a system
+# verilator (e.g. Debian's) is a wrapper script that derives verilator_bin
+# from VERILATOR_ROOT, so exporting the local path while running the system
+# one makes it exec a file that is not there.
 ifneq ($(wildcard $(GCSW)/verilator/bin/verilator_bin),)
-VERILATOR   ?= env VERILATOR_ROOT=$(GCSW)/verilator $(GCSW)/verilator/bin/verilator_bin
-else
-VERILATOR   ?= verilator
-endif
+VERILATOR     ?= $(GCSW)/verilator/bin/verilator_bin
 export VERILATOR_ROOT ?= $(GCSW)/verilator
+else
+VERILATOR     ?= verilator
+endif
 
 # iverilog and the placer both write scratch files; containers usually have
 # a small /tmp, so keep them here.
