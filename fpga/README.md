@@ -24,7 +24,9 @@ mkdir -p /opt/gcsh && dpkg-deb -x /tmp/gcsh.deb /opt/gcsh
 export GCSW=/opt/gcsh/usr/local/go-configure-sw-hub/bin/external
 ```
 
-Then create the support directory the placer needs:
+Then nothing else: `make check-tools` creates the `v22c` directory the
+placer needs (the v22 binary inside a copy of the v23 support files) if it
+is missing, and says so when it does.  To do it by hand instead:
 
 ```sh
 cd "$GCSW/eda-placer"

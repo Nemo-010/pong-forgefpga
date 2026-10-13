@@ -1,5 +1,8 @@
 # pong-chip — Verilog Pong for a ForgeFPGA (Renesas SLG47910V)
 
+[![ci](https://github.com/Nemo-010/pong-forgefpga/actions/workflows/ci.yml/badge.svg)](https://github.com/Nemo-010/pong-forgefpga/actions/workflows/ci.yml)
+[![fpga](https://github.com/Nemo-010/pong-forgefpga/actions/workflows/fpga.yml/badge.svg)](https://github.com/Nemo-010/pong-forgefpga/actions/workflows/fpga.yml)
+
 A complete, self-contained Pong game in Verilog, small enough to fit the
 ForgeFPGA on a Vicharak Shrike Lite, driving a 128x64 SSD1306 OLED over a
 400 kHz open-drain I2C bus from five switches.  No CPU, no framebuffer, no
@@ -27,6 +30,7 @@ make asic       # Tiny Tapeout wrapper elaborate + lint
 | Fits the device | yes — 91.4% of the 140 logic blocks, 87.7% of LUTs, 48.6% of FFs |
 | Static timing at 50 MHz | **not closed** — the vendor placer reports a worst path of 35.1 ns (28.5 MHz) against the 18.5-23 ns the internal oscillator gives. Read [docs/TIMING.md](docs/TIMING.md) before trusting the bitstream on hardware; it has the paths, the reasons and the three ways to close it. |
 | Bitstream tooling | proprietary (free) Renesas Go Configure Software Hub; there is no open bitstream path for the SLG47910. The synthesis and verification half of the flow is fully open. |
+| Reproducible from a clean clone | yes — the `fpga` workflow downloads the toolchain, builds the bitstream and uploads it as an artifact ([run](https://github.com/Nemo-010/pong-forgefpga/actions/workflows/fpga.yml)) |
 
 The honest summary: the design is complete, verified in simulation, and
 it fits and produces a bitstream; the vendor place-and-route's static
