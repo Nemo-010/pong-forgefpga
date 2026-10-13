@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GPDProject version="40" oldestCompatibleVersion="32" GPDVersion="6.53.003" lastChange="13 Oct 2026 00:00:00" projectChecksumState="0" projectChecksum="00000000">
+    <Metadata>
+        <LegalNotice>Generated with Vulcan's Shrike Gen. MIT Licensed. No warranties!</LegalNotice>
+    </Metadata>
+    <generalProjectSettings/>
+    <chip family="04" type="06" friendlyName="FFPGA" partNumber="67" package="26">
+        <nvmData registerLenght="480">0 0 0 28 0 0 0 0 A5 A5 A5 A5 0 0 0 0 0 0 0 0 5A 5A 5A 5A 0 0 0 0 22 22 22 22 22 22 22 22 22 22 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</nvmData>
+        <checksum crc32="0x451C1D42" version="2"/>
+        <virtualProperties/>
+    </chip>
+    <fpga-data>
+        <project-data-version>8</project-data-version>
+        <oldestCompatibleVersion>8</oldestCompatibleVersion>
+        <settings>
+            <generateBitstream>
+                <MAX_CPU>12</MAX_CPU>
+                <additionalArguments></additionalArguments>
+                <clockConcurrentOptimization>true</clockConcurrentOptimization>
+                <compilerVersion>23</compilerVersion>
+                <highDensityIOPacking>false</highDensityIOPacking>
+                <highDensityPackingLogic>true</highDensityPackingLogic>
+                <maximumRoutingIterations>300</maximumRoutingIterations>
+                <placeAndTrialRoute>false</placeAndTrialRoute>
+                <placeAndTrialRouteIterationCount>20</placeAndTrialRouteIterationCount>
+                <timingAnalysisCorner>0</timingAnalysisCorner>
+                <timingAnalysisLimitPaths>-1</timingAnalysisLimitPaths>
+            </generateBitstream>
+            <synthesize>
+                <additionalArguments></additionalArguments>
+                <autoname>true</autoname>
+                <enableHardMultiplexerResources>false</enableHardMultiplexerResources>
+                <flatten>true</flatten>
+                <keep>false</keep>
+                <multiplexerResourcesNumber>5</multiplexerResourcesNumber>
+                <noDSP>true</noDSP>
+                <noFSM>false</noFSM>
+                <useABC9>true</useABC9>
+                <yosysVersion>59</yosysVersion>
+            </synthesize>
+        </settings>
+        <modules>
+            <scr>
+                <module filename="btn_debounce.v"/>
+                <module filename="i2c_master.v"/>
+                <module filename="pong_core.v"/>
+                <module filename="pong_font.v"/>
+                <module filename="pong_frame.v"/>
+                <module filename="pong_render.v"/>
+                <module filename="pong_top.v"/>
+                <module filename="reset_gen.v"/>
+                <module filename="ssd1306_ctrl.v"/>
+                <module filename="tick_gen.v"/>
+            </scr>
+        </modules>
+        <io-spec-tool>
+            <records filter="126" filter1="16">
+                <record id="IOB_t[0:0]_xy[0:25]_out0">
+                    <port-name>clk_en</port-name>
+                </record>
+                <record id="IOB_t[0:0]_xy[0:25]_in0">
+                    <port-name>clk</port-name>
+                </record>
+                <record id="IOB_t[0:0]_xy[31:6]_out0">
+                    <port-name>o_led</port-name>
+                </record>
+                <record id="IOB_t[0:0]_xy[31:6]_out1">
+                    <port-name>o_led_oe</port-name>
+                </record>
+                <record id="IOB_t[0:0]_xy[31:9]_in0">
+                    <port-name>i_btn_start_n</port-name>
+                </record>
+                <record id="IOB_t[0:0]_xy[31:22]_in0">
+                    <port-name>i_btn_r_dn_n</port-name>
+                </record>
+                <record id="IOB_t[0:0]_xy[31:23]_in0">
+                    <port-name>i_btn_r_up_n</port-name>
+                </record>
+                <record id="IOB_t[0:0]_xy[31:24]_in0">
+                    <port-name>i_btn_l_dn_n</port-name>
+                </record>
+                <record id="IOB_t[0:0]_xy[31:25]_in0">
+                    <port-name>i_btn_l_up_n</port-name>
+                </record>
+                <record id="IOB_t[0:0]_xy[31:26]_out0">
+                    <port-name>o_sda</port-name>
+                </record>
+                <record id="IOB_t[0:0]_xy[31:26]_out1">
+                    <port-name>o_sda_oe</port-name>
+                </record>
+                <record id="IOB_t[0:0]_xy[31:26]_in0">
+                    <port-name>i_sda</port-name>
+                </record>
+                <record id="IOB_t[0:0]_xy[31:27]_out0">
+                    <port-name>o_scl</port-name>
+                </record>
+                <record id="IOB_t[0:0]_xy[31:27]_out1">
+                    <port-name>o_scl_oe</port-name>
+                </record>
+                <record id="IOB_t[0:0]_xy[31:27]_in0">
+                    <port-name>i_scl</port-name>
+                </record>
+            </records>
+        </io-spec-tool>
+        <pllConfigurator>
+            <pllConfiguratorDataVersion>1</pllConfiguratorDataVersion>
+            <pllConfigurations>
+                <pllConfiguration>
+                    <pllFref>50.000000</pllFref>
+                    <pllIsManualCalculationMode>0</pllIsManualCalculationMode>
+                    <pllOutputChannels>
+                        <pllOutputChannel>
+                            <pllIsOutEnabled>1</pllIsOutEnabled>
+                            <pllRequiredFout>50.000000</pllRequiredFout>
+                            <pllRefDiv>1</pllRefDiv>
+                            <pllFbDiv>25</pllFbDiv>
+                            <pllPostDiv1>5</pllPostDiv1>
+                            <pllPostDiv2>5</pllPostDiv2>
+                        </pllOutputChannel>
+                    </pllOutputChannels>
+                    <pllProperties>
+                        <pllBypass>0</pllBypass>
+                        <pllClockSelection>0</pllClockSelection>
+                        <pllEnableUserClockByPll>0</pllEnableUserClockByPll>
+                        <pllLock>0</pllLock>
+                    </pllProperties>
+                </pllConfiguration>
+            </pllConfigurations>
+        </pllConfigurator>
+    </fpga-data>
+    <projectData>
+        <specs>
+            <lastModify lastModifyValue="13.10.2026 00:00:00"/>
+            <vddSpecs vddMin="1.05" vddTyp="1.1" vddMax="1.15"/>
+            <vdd2Specs vdd2Min="1.71" vdd2Typ="2.5" vdd2Max="3.465"/>
+            <tempSpecs tempMin="-40" tempTyp="30" tempMax="85"/>
+        </specs>
+    </projectData>
+</GPDProject>

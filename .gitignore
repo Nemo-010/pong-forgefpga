@@ -6,6 +6,7 @@ __pycache__/
 *.vvp
 *.vcd
 
-# ForgeFPGA build products (see fpga/Makefile)
+# ForgeFPGA build products (see fpga/Makefile).
+# fpga/Pong.ffpga is NOT ignored: it is the file whose presence puts the
+# shrike-gen Makefile into project mode, so a fresh clone needs it.
 fpga/ffpga/build/
-fpga/*.ffpga

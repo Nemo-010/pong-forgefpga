@@ -31,6 +31,10 @@ cd "$GCSW/eda-placer"
 cp -a v23 v22c && cp v22/eda-placer v22c/eda-placer
 ```
 
+`Pong.ffpga` is committed on purpose: the shrike-gen Makefile uses the
+presence of a `*.ffpga` file to tell "project directory" from "workspace
+directory", and without it `make -C fpga all` quietly does nothing.
+
 `GCSW` defaults to `../../.tools/goconfig/usr/local/go-configure-sw-hub/bin/external`
 in this repository's Makefile, which is where the container this was
 written in keeps it.
