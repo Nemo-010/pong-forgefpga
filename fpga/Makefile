@@ -318,7 +318,7 @@ update: $(PCF) $(BUILD_DIR)
 build: check-tools pnr
 
 # ── check-tools: verify external binaries and generated inputs exist ──────────
-check-tools:
+check-tools: | $(TMPDIR)
 ifeq ($(PROJECT_TYPE),vhdl)
 	@test -x "$(YOSYS_VHDL)" || (echo "ERROR: yosys not found at $(YOSYS_VHDL) (oss-cad-suite missing?)"; exit 1)
 	@test -x "$(GHDL)"       || (echo "ERROR: ghdl not found at $(GHDL) (oss-cad-suite missing?)";   exit 1)
@@ -330,6 +330,11 @@ endif
 	@test -f $(IO_SPEC)    || (echo "ERROR: io_spec_in.txt missing — run: make update"; exit 1)
 	@test -f $(FLOOR_PLAN) || $(MAKE) --no-print-directory $(FLOOR_PLAN)
 	@echo "Tools OK"
+
+# iverilog and eda-placer both need a writable scratch directory; a fresh
+# clone has none, so make sure it exists before anything runs.
+$(TMPDIR):
+	@mkdir -p $(TMPDIR)
 
 # ── lint ──────────────────────────────────────────────────────────────────────
 lint: check-tools
@@ -413,7 +418,6 @@ $(BUILD_DIR):
 # ── pnr: place & route, then collect ─────────────────────────────────────────
 pnr: synth
 	@echo "=== Place & Route ==="
-	@mkdir -p $(TMPDIR)
 	$(eval RUNDIR := $(shell mktemp -d $(TMPDIR)/eflx_XXXXXXXX))
 	mkdir -p $(RUNDIR)/config $(RUNDIR)/out
 	cp $(IO_SPEC)    $(RUNDIR)/config/io_spec_in.txt
