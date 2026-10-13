@@ -324,7 +324,7 @@ update: $(PCF) $(BUILD_DIR)
 build: check-tools pnr
 
 # ── check-tools: verify external binaries and generated inputs exist ──────────
-check-tools: | $(TMPDIR) $(FLOOR_PLAN)
+check-tools: prepare-placer | $(TMPDIR) $(FLOOR_PLAN)
 ifeq ($(PROJECT_TYPE),vhdl)
 	@test -x "$(YOSYS_VHDL)" || (echo "ERROR: yosys not found at $(YOSYS_VHDL) (oss-cad-suite missing?)"; exit 1)
 	@test -x "$(GHDL)"       || (echo "ERROR: ghdl not found at $(GHDL) (oss-cad-suite missing?)";   exit 1)
@@ -340,6 +340,26 @@ endif
 # clone has none, so make sure it exists before anything runs.
 $(TMPDIR):
 	@mkdir -p $(TMPDIR)
+
+# ── prepare-placer: create the v22c placer directory if it is missing ─────────
+# v22c is the v22 placer *binary* inside a copy of the v23 install
+# directory: v23's binary aborts on the 1K tile and v22's own directory
+# ships no sdf_dly, so the flow needs the two halves together.  That is an
+# environment artifact rather than something to commit, so create it from
+# whatever the Go Configure Hub package installed.  See docs/TIMING.md.
+ifeq ($(PLACER_VER),v22c)
+prepare-placer:
+	@if [ ! -x "$(EDA_PLACER)" ] && [ -x "$(GCSW)/eda-placer/v22/eda-placer" ]; then \
+	  echo "=== Preparing the placer directory ($(PLACER_VER)) ==="; \
+	  cp -a "$(GCSW)/eda-placer/v23" "$(GCSW)/eda-placer/$(PLACER_VER).new" && \
+	  cp "$(GCSW)/eda-placer/v22/eda-placer" "$(GCSW)/eda-placer/$(PLACER_VER).new/eda-placer" && \
+	  mv "$(GCSW)/eda-placer/$(PLACER_VER).new" "$(GCSW)/eda-placer/$(PLACER_VER)" \
+	    || echo "WARNING: could not create $(GCSW)/eda-placer/$(PLACER_VER); see fpga/README.md"; \
+	fi
+else
+prepare-placer:
+	@:
+endif
 
 # ── lint ──────────────────────────────────────────────────────────────────────
 lint: check-tools
