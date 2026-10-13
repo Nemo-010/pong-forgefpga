@@ -55,34 +55,38 @@ all: lint sim phys
 $(OUT):
 	@mkdir -p $(OUT)
 
-sim: $(OUT) \
-     sim-i2c sim-tick sim-core sim-pong sim-font
+# iverilog and eda-placer need a writable scratch directory; it is not in
+# the repository (a fresh clone has no tmp/), so create it on demand.
+$(TMPDIR):
+	@mkdir -p $(TMPDIR)
+
+sim: $(OUT) sim-i2c sim-tick sim-core sim-pong sim-font | $(TMPDIR)
 	@echo "== all simulations passed =="
 
-sim-i2c: $(OUT)
+sim-i2c: $(OUT) | $(TMPDIR)
 	@echo "-- tb_i2c_master (UM10204 fast-mode timing)"
 	@$(IV) $(IVFLAGS) $(OUT)/tb_i2c.vvp src/i2c_master.v sim/tb_i2c_master.v
 	@$(VV) $(OUT)/tb_i2c.vvp | grep -E "measured|PASSED|FAIL|NACK|ACK"
 
-sim-tick: $(OUT)
+sim-tick: $(OUT) | $(TMPDIR)
 	@echo "-- tb_tick (one-cycle tick every 2**16 clocks)"
 	@$(IV) $(IVFLAGS) $(OUT)/tb_tick.vvp src/tick_gen.v sim/tb_tick.v
 	@$(VV) $(OUT)/tb_tick.vvp | grep -E "tick period|FAIL"
 
-sim-core: $(OUT)
+sim-core: $(OUT) | $(TMPDIR)
 	@echo "-- tb_core + compare_trace (RTL vs golden model, 2000 ticks)"
 	@$(IV) $(IVFLAGS) $(OUT)/tb_core.vvp src/pong_core.v sim/tb_core.v
 	@$(VV) $(OUT)/tb_core.vvp > $(OUT)/tb_core.log
 	@$(PY) scripts/physics.py --trace $(OUT)/model_trace.txt
 	@$(PY) scripts/compare_trace.py
 
-sim-pong: $(OUT)
+sim-pong: $(OUT) | $(TMPDIR)
 	@echo "-- tb_pong (full design + SSD1306 model, 60 frames of I2C)"
 	@$(IV) $(IVFLAGS) $(OUT)/tb_pong.vvp $(SRC) sim/ssd1306_model.v sim/tb_pong.v
 	@cd $(CURDIR) && $(VV) $(OUT)/tb_pong.vvp | grep -E "frames|FAIL|PASS"
 	@$(PY) scripts/frame_check.py $(OUT)/frames.hex --all --quiet
 
-sim-font: $(OUT)
+sim-font: $(OUT) | $(TMPDIR)
 	@echo "-- tb_font (font ROM against scripts/font_gen.py)"
 	@$(IV) $(IVFLAGS) $(OUT)/tb_font.vvp src/pong_font.v sim/tb_font.v
 	@$(VV) $(OUT)/tb_font.vvp | grep -E "written|FAIL|PASS"

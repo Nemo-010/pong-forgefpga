@@ -401,6 +401,7 @@ $(BUILD_DIR):
 # ── pnr: place & route, then collect ─────────────────────────────────────────
 pnr: synth
 	@echo "=== Place & Route ==="
+	@mkdir -p $(TMPDIR)
 	$(eval RUNDIR := $(shell mktemp -d $(TMPDIR)/eflx_XXXXXXXX))
 	mkdir -p $(RUNDIR)/config $(RUNDIR)/out
 	cp $(IO_SPEC)    $(RUNDIR)/config/io_spec_in.txt
